@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../models/realestate.dart';
 import '../repository/realestate_repo.dart';
 
@@ -26,7 +25,6 @@ class FetchRealEstatesEvent extends RealEstateEvent {
   List<Object?> get props => [cityId, categoryId, offerType, searchQuery];
 }
 
-// States
 class RealEstateState extends Equatable {
   final List<RealEstateModel> realEstates;
   final bool isLoading;
@@ -54,7 +52,6 @@ class RealEstateState extends Equatable {
   List<Object?> get props => [realEstates, isLoading, error];
 }
 
-// BLoC
 class RealEstateBloc extends Bloc<RealEstateEvent, RealEstateState> {
   final RealEstateRepository _repository;
 
@@ -75,7 +72,6 @@ class RealEstateBloc extends Bloc<RealEstateEvent, RealEstateState> {
         offerType: event.offerType,
       );
 
-      // Optional: Apply search filter if search query is provided
       final filteredRealEstates = event.searchQuery != null
           ? realEstates.where((estate) =>
       estate.ownerName.toLowerCase().contains(event.searchQuery!.toLowerCase()) ||

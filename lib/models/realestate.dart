@@ -1,6 +1,3 @@
-
-
-
 import 'category.dart';
 import 'city.dart';
 

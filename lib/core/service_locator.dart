@@ -9,25 +9,20 @@ class ServiceLocator {
   static final GetIt _getIt = GetIt.instance;
 
   static Future<void> setup() async {
-    // Shared Preferences
     final prefs = await SharedPreferences.getInstance();
     _getIt.registerSingleton<SharedPreferences>(prefs);
 
-    // Dio
     final dio = Dio(BaseOptions(
       baseUrl: 'https://v3.ibaity.com/api/',
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
-    ));
+    )
+    );
 
     _getIt.registerSingleton<Dio>(dio);
-
-    // Repository
     _getIt.registerFactory<RealEstateRepository>(
           () => RealEstateRepository(_getIt<Dio>(), _getIt<SharedPreferences>()),
     );
-
-    // BLoC
     _getIt.registerFactory<RealEstateBloc>(
           () => RealEstateBloc(_getIt<RealEstateRepository>()),
     );

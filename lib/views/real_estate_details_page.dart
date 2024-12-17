@@ -1,12 +1,8 @@
-// lib/views/real_estate_details_page.dart
 import 'package:flutter/material.dart';
 import '../models/realestate.dart';
-
 class RealEstateDetailsPage extends StatelessWidget {
   final RealEstateModel realEstate;
-
   const RealEstateDetailsPage({super.key, required this.realEstate});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

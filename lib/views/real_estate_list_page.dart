@@ -1,60 +1,48 @@
 import 'package:baity/models/category.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../blocs/real_estate_bloc.dart';
 import '../core/service_locator.dart';
 import '../models/city.dart';
 import '../repository/realestate_repo.dart';
 import 'real_estate_details_page.dart';
-
 class RealEstateListPage extends StatefulWidget {
   const RealEstateListPage({super.key});
-
   @override
   _RealEstateListPageState createState() => _RealEstateListPageState();
 }
-
 class _RealEstateListPageState extends State<RealEstateListPage> {
   final TextEditingController _searchController = TextEditingController();
   String? _selectedCity;
   String? _selectedCategory;
   String? _selectedOfferType;
-
   List<CityModel> _cities = [];
   List<CategoryModel> _categories = [];
   bool _isLoading = true;
-
   @override
   void initState() {
     super.initState();
     _loadInitialData();
   }
-
   Future<void> _loadInitialData() async {
     try {
       final repository = ServiceLocator.get<RealEstateRepository>();
-
-      // Fetch cities and categories concurrently
       final results = await Future.wait([
         repository.fetchCities(),
         repository.fetchCategories()
       ]);
-
       setState(() {
         _cities = results[0] as List<CityModel>;
         _categories = results[1] as List<CategoryModel>;
         _isLoading = false;
       });
-
-      // Fetch real estates
       _fetchRealEstates();
     } catch (e) {
       setState(() {
         _isLoading = false;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to load data: $e')),
+        SnackBar(content: Text('Failed to load: $e')),
       );
     }
   }
@@ -96,8 +84,6 @@ class _RealEstateListPageState extends State<RealEstateListPage> {
               onChanged: (_) => _fetchRealEstates(),
             ),
           ),
-
-          // City Dropdown
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: DropdownButtonFormField<String>(
@@ -119,7 +105,6 @@ class _RealEstateListPageState extends State<RealEstateListPage> {
             ),
           ),
 
-          // Category Dropdown
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: DropdownButtonFormField<String>(
@@ -140,8 +125,6 @@ class _RealEstateListPageState extends State<RealEstateListPage> {
               decoration: const InputDecoration(border: OutlineInputBorder()),
             ),
           ),
-
-          // Offer Type Dropdown
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: DropdownButtonFormField<String>(
@@ -161,7 +144,6 @@ class _RealEstateListPageState extends State<RealEstateListPage> {
             ),
           ),
 
-          // Real Estate List
           Expanded(
             child: BlocBuilder<RealEstateBloc, RealEstateState>(
               builder: (context, state) {
