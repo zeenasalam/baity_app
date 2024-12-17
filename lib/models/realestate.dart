@@ -1,17 +1,41 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'category.dart';
 import 'city.dart';
 
+part 'realestate.g.dart';
+
+@JsonSerializable()
 class RealEstateModel {
+  @JsonKey(defaultValue: '')
   final String id;
+
+  @JsonKey(defaultValue: '')
   final String title;
+
+  @JsonKey(defaultValue: '')
   final String ownerName;
+
+  @JsonKey(defaultValue: '')
   final String ownerImageUrl;
+
+  @JsonKey(fromJson: _cityFromJson)
   final CityModel city;
+
+  @JsonKey(fromJson: _categoryFromJson)
   final CategoryModel category;
+
+  @JsonKey(defaultValue: '')
   final String offerType;
+
+  @JsonKey(fromJson: _doubleFromJson)
   final double price;
+
+  @JsonKey(fromJson: _doubleFromJson)
   final double area;
+
   final int? noOfRooms;
+
+  @JsonKey(readValue: _readDistrictValue)
   final String? district;
 
   RealEstateModel({
@@ -28,19 +52,25 @@ class RealEstateModel {
     this.district,
   });
 
-  factory RealEstateModel.fromJson(Map<String, dynamic> json) {
-    return RealEstateModel(
-      id: json['id'] ?? '',
-      title: json['title'] ?? '',
-      ownerName: json['ownerName'] ?? '',
-      ownerImageUrl: json['ownerImageUrl'] ?? '',
-      city: CityModel.fromJson(json['city'] ?? {}),
-      category: CategoryModel.fromJson(json['category'] ?? {}),
-      offerType: json['offerType'] ?? '',
-      price: (json['price'] is num) ? json['price'].toDouble() : 0.0,
-      area: (json['area'] is num) ? json['area'].toDouble() : 0.0,
-      noOfRooms: json['noOfRooms'],
-      district: json['district']?['name'],
-    );
+  static double _doubleFromJson(dynamic value) {
+    if (value == null) return 0.0;
+    return value is num ? value.toDouble() : 0.0;
   }
+
+  static CityModel _cityFromJson(Map<String, dynamic>? json) {
+    return CityModel.fromJson(json ?? {});
+  }
+
+  static CategoryModel _categoryFromJson(Map<String, dynamic>? json) {
+    return CategoryModel.fromJson(json ?? {});
+  }
+
+  static Object? _readDistrictValue(Map map, String key) {
+    return map['district']?['name'];
+  }
+
+  factory RealEstateModel.fromJson(Map<String, dynamic> json) =>
+      _$RealEstateModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RealEstateModelToJson(this);
 }

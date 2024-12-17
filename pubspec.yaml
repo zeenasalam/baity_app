@@ -19,7 +19,13 @@ dependencies:
   shared_preferences:
   responsive_framework:
   equatable: ^2.0.7
-  get_it: ^8.0.3
+#  get_it: ^8.0.3
+
+  #new
+  json_serializable:
+  build_runner:
+  json_annotation: ^4.9.0
+  provider: ^6.0.5
 
 
 dev_dependencies:

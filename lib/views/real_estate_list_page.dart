@@ -1,6 +1,7 @@
 import 'package:baity/models/category.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import '../blocs/real_estate_bloc.dart';
 import '../core/service_locator.dart';
 import '../models/city.dart';
@@ -26,7 +27,8 @@ class _RealEstateListPageState extends State<RealEstateListPage> {
   }
   Future<void> _loadInitialData() async {
     try {
-      final repository = ServiceLocator.get<RealEstateRepository>();
+      final repository = Provider.of<RealEstateRepository>(context, listen: false);
+      // final repository = ServiceLocator.get<RealEstateRepository>();
       final results = await Future.wait([
         repository.fetchCities(),
         repository.fetchCategories()

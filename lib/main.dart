@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'core/service_locator.dart';
 import 'blocs/real_estate_bloc.dart';
 import 'views/real_estate_list_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await ServiceLocator.setup();
-  runApp(const RealEstateApp());
+  final providers = await ServiceLocator.setup();
+  runApp(MultiProvider(
+    providers: providers,
+    child: const RealEstateApp(),
+  ));
 }
 
 class RealEstateApp extends StatelessWidget {
@@ -21,7 +25,7 @@ class RealEstateApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: BlocProvider(
-        create: (_) => ServiceLocator.get<RealEstateBloc>(),
+        create: (context) => context.read<RealEstateBloc>(),
         child: const RealEstateListPage(),
       ),
     );
