@@ -14,7 +14,6 @@ class CityModel {
     required this.name,
   });
 
-  // Custom reader for the nested names field
   static Object? _readNameValue(Map map, String key) {
     return map['names']?['en-US'] ?? map['name'] ?? '';
   }
