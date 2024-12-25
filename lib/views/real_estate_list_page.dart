@@ -13,17 +13,39 @@ class RealEstateListPage extends StatefulWidget {
   _RealEstateListPageState createState() => _RealEstateListPageState();
 }
 class _RealEstateListPageState extends State<RealEstateListPage> {
-  final TextEditingController _searchController = TextEditingController();
+  // final TextEditingController _searchController = TextEditingController();
   String? _selectedCity;
   String? _selectedCategory;
   String? _selectedOfferType;
   List<CityModel> _cities = [];
   List<CategoryModel> _categories = [];
   bool _isLoading = true;
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
     _loadInitialData();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_isNearBottom) {
+      context.read<RealEstateBloc>().add(LoadMoreRealEstatesEvent());
+    }
+  }
+
+  bool get _isNearBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
   }
   Future<void> _loadInitialData() async {
     try {
@@ -55,7 +77,7 @@ class _RealEstateListPageState extends State<RealEstateListPage> {
         cityId: _selectedCity,
         categoryId: _selectedCategory,
         offerType: _selectedOfferType,
-        searchQuery: _searchController.text,
+        // searchQuery: _searchController.text,
       ),
     );
   }
@@ -74,18 +96,18 @@ class _RealEstateListPageState extends State<RealEstateListPage> {
       body: Column(
         children: [
           // Search Bar
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search by Owner or Title',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-              onChanged: (_) => _fetchRealEstates(),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: TextField(
+          //     controller: _searchController,
+          //     decoration: InputDecoration(
+          //       hintText: 'Search by Owner or Title',
+          //       prefixIcon: const Icon(Icons.search),
+          //       border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+          //     ),
+          //     onChanged: (_) => _fetchRealEstates(),
+          //   ),
+          // ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: DropdownButtonFormField<String>(
@@ -162,8 +184,18 @@ class _RealEstateListPageState extends State<RealEstateListPage> {
                 }
 
                 return ListView.builder(
-                  itemCount: state.realEstates.length,
+                  controller: _scrollController,
+                  itemCount: state.realEstates.length + (state.isLoading ? 1 : 0),
                   itemBuilder: (context, index) {
+                    if (index >= state.realEstates.length) {
+                      return const Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
+
                     final estate = state.realEstates[index];
                     return ListTile(
                       title: Text(estate.title),
