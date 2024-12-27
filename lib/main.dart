@@ -1,9 +1,11 @@
+import 'package:baity/blocs/get_realestate_cubit.dart';
+import 'package:baity/views/real_estate_screen.dart';
+import 'package:baity/views/realestate_pagination_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'core/service_locator.dart';
 import 'blocs/real_estate_bloc.dart';
-import 'views/real_estate_list_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -24,9 +26,17 @@ class RealEstateApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: BlocProvider(
-        create: (context) => context.read<RealEstateBloc>(),
-        child: const RealEstateListPage(),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider<RealEstateBloc>(
+            create: (context) => context.read<RealEstateBloc>(),
+            child: const RealestateScreen(),
+          ),
+          BlocProvider<GetRealEstateCubit>(
+            create: (context) => context.read<GetRealEstateCubit>(),
+          ),
+        ],
+        child: const RealestatePaginationScreen(),
       ),
     );
   }

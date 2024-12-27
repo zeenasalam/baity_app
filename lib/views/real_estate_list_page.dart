@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import '../blocs/real_estate_bloc.dart';
-import '../core/service_locator.dart';
 import '../models/city.dart';
 import '../repository/realestate_repo.dart';
 import 'real_estate_details_page.dart';
